@@ -1,8 +1,9 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
 
 	def setUp (self):
 		self.browser = webdriver.Firefox()
@@ -20,7 +21,7 @@ class NewVisitorTest(unittest.TestCase):
 # Edith has heard about a cool new online to-do app. She goes
 # to check out its homepage
 
-		self.browser.get('http://localhost:8000')
+		self.browser.get(self.live_server_url)
 
 # She notices the page title and header mention to-do lists
 
@@ -46,7 +47,7 @@ class NewVisitorTest(unittest.TestCase):
 
 		inputbox.send_keys(Keys.ENTER)
 
-		self.check_for_rows_in_list_table('1: Buy peacock feathers')
+		self.check_for_row_in_list_table('1: Buy peacock feathers')
 
 # There is still a text box inviting her to add another item. She
 # enters "Use peacock feathers to make a fly" (Edith is very methodical)
@@ -57,8 +58,8 @@ class NewVisitorTest(unittest.TestCase):
 
 # The page updates again, and now shows both items on her list. 
 
-		self.check_for_rows_in_list_table('1: Buy peacock feathers')
-		self.check_for_rows_in_list_table('2: Use peacock feathers to make a fly')
+		self.check_for_row_in_list_table('1: Buy peacock feathers')
+		self.check_for_row_in_list_table('2: Use peacock feathers to make a fly')
 
 # Then she sees that the site has generated a unique URL for her -- 
 # there is some explanatory text to that effect.
@@ -69,6 +70,3 @@ class NewVisitorTest(unittest.TestCase):
 
 # Satisfied, she goes back to sleep
 
-
-if __name__ == '__main__':
-	unittest.main(warnings='ignore')
