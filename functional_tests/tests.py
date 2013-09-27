@@ -2,8 +2,23 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 import unittest
+import sys
 
 class NewVisitorTest(LiveServerTestCase):
+
+	@classmethod
+	def setUpClass(cls):
+		for arg in sys.argv:
+			if 'liveserver' in arg:
+				cls.server_url = 'http://' + arg.split('=')[1]
+				return
+		LiveServerTestCase.setUpClass()
+		cls.server_url = cls.live_server_url
+
+	@classmethod
+	def tearDownClass(cls):
+		if cls.server_url == cls.live_server_url:
+			LiveServerTestCase.tearDownClass()
 
 	def setUp (self):
 		self.browser = webdriver.Firefox()
@@ -21,7 +36,7 @@ class NewVisitorTest(LiveServerTestCase):
 # Edith has heard about a cool new online to-do app. She goes
 # to check out its homepage
 
-		self.browser.get(self.live_server_url)
+		self.browser.get(self.server_url)
 
 # She notices the page title and header mention to-do lists
 
@@ -74,7 +89,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 # Francis visits the home page. There is no sign of Edith's list
 
-		self.browser.get(self.live_server_url)
+		self.browser.get(self.server_url)
 		page_text = self.browser.find_element_by_tag_name('body').text
 		self.assertNotIn('Buy peacock feathers', page_text)
 		self.assertNotIn('make a fly', page_text)
@@ -102,7 +117,7 @@ class NewVisitorTest(LiveServerTestCase):
 
 	def test_layout_and_styling(self):
 # Edith goes to teh home page
-		self.browser.get(self.live_server_url)
+		self.browser.get(self.server_url)
 
 # She notices the input box is nicely centered
 		inputbox = self.browser.find_element_by_tag_name('input')
